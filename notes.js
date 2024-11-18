@@ -1,4 +1,4 @@
-const notes = [
+module.exports = [
   {
     id: "1",
     name: "Arto Hellas",
