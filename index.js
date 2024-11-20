@@ -1,10 +1,10 @@
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
+const cors = require("cors")
 let contacts = require("./contacts");
 
-const PORT = 3001;
-console.log(contacts);
+const PORT = process.env.PORT || 3001;
 
 morgan.token("resbody", (req, res) => {
   return JSON.stringify(req.body);
@@ -20,6 +20,9 @@ app.use(
     }
   )
 );
+app.use(express.static("dist"))
+app.use(cors())
+
 
 function getRandomInt(min, max) {
   const minCeiled = Math.ceil(min);
