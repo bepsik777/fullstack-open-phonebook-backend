@@ -1,0 +1,1 @@
+link to the application: https://fullstack-open-phonebook-backend-silent-resonance-7469.fly.dev 

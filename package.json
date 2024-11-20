@@ -9,7 +9,7 @@
     "dev": "nodemon index.js",
     "build:ui": "rm -r dist && cd ../full-stack-open-assignments/part2/phonebook && npm run build && cp -r dist ../../../fullstack-open-phonebook-backend",
     "deploy:full": "npm run build:ui && fly deploy",
-    "logs:prod": "fly:logs"
+    "logs:prod": "fly logs"
   },
   "keywords": [],
   "author": "",
