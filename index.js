@@ -1,10 +1,12 @@
+require("dotenv").config();
+const Contact = require("./models/contact");
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
-const cors = require("cors")
+const cors = require("cors");
 let contacts = require("./contacts");
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 
 morgan.token("resbody", (req, res) => {
   return JSON.stringify(req.body);
@@ -20,9 +22,8 @@ app.use(
     }
   )
 );
-app.use(express.static("dist"))
-app.use(cors())
-
+app.use(express.static("dist"));
+app.use(cors());
 
 function getRandomInt(min, max) {
   const minCeiled = Math.ceil(min);
@@ -34,41 +35,52 @@ app.get("/", (req, res) => {
   res.send("you want some persons? go to /persons");
 });
 
-app.get("/info", (req, res) => {
+app.get("/info", async (req, res) => {
   const time = new Date().toString();
-  res.send(
-    `<p>Phonebook has info on ${contacts.length} people</p><p>${time}<p>`
-  );
+  const numOfContacts = await Contact.countDocuments({});
+  res.send(`<p>Phonebook has info on ${numOfContacts} people</p><p>${time}<p>`);
 });
 
-app.get("/persons", (req, res) => {
-  res.json(contacts);
+app.get("/persons", async (req, res) => {
+  const allContacts = await Contact.find({});
+  res.json(allContacts);
 });
 
-app.get("/persons/:id", (req, res) => {
+app.get("/persons/:id", async (req, res) => {
   const id = req.params.id;
-  const note = contacts.find((n) => n.id === id);
-  note ? res.send(note) : res.status(404).end();
+  const contact = await Contact.findById(id);
+  console.log(contact, "this is contact");
+  contact ? res.send(contact) : res.status(404).end();
 });
 
-app.delete("/persons/:id", (req, res) => {
+app.delete("/persons/:id", async (req, res) => {
   const id = req.params.id;
-  contacts = contacts.filter((n) => n.id !== id);
+  result = await Contact.findOneAndDelete({ _id: id });
   res.status(204).end();
 });
 
-app.post("/persons", (req, res) => {
+app.post("/persons", async (req, res) => {
   const contact = req.body;
   if (!contact.name || !contact.number) {
     res.status(400).json({ error: "name or number fields are missing" });
   }
-  if (contacts.find((c) => c.name === contact.name)) {
+
+  const contactAlreadyExists =
+    (await Contact.findOne({ name: contact.name })) !== null;
+  console.log(contactAlreadyExists);
+
+  if (contactAlreadyExists) {
     res.status(409).json({ error: "this contact already exists" });
+    return;
   }
 
-  const newContact = { id: getRandomInt(1, 100000), ...contact };
-  contacts.push(newContact);
-  res.json(newContact);
+  const newContact = new Contact({
+    name: contact.name,
+    number: contact.number,
+  });
+
+  const result = await newContact.save();
+  res.json(result);
 });
 
 app.listen(PORT, () => {

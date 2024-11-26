@@ -24,6 +24,6 @@ contactSchema.set("toJSON", {
     }
 })
 
-const Contact = new mongoose.model("Contact", contactSchema)
+const Contact = new mongoose.model("contact", contactSchema)
 console.log("all the code from model runned")
 module.exports = Contact
