@@ -9,7 +9,8 @@
     "dev": "nodemon index.js",
     "build:ui": "rm -r dist && cd ../full-stack-open-assignments/part2/phonebook && npm run build && cp -r dist ../../../fullstack-open-phonebook-backend",
     "deploy:full": "npm run build:ui && fly deploy",
-    "logs:prod": "fly logs"
+    "logs:prod": "fly logs",
+    "lint": "eslint ."
   },
   "keywords": [],
   "author": "",
@@ -22,7 +23,12 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.15.0",
     "@flydotio/dockerfile": "^0.5.9",
+    "@stylistic/eslint-plugin": "^2.11.0",
+    "eslint": "^9.15.0",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.12.0",
     "nodemon": "^3.1.7"
   }
 }
